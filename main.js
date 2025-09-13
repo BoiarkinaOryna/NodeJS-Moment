@@ -1,20 +1,15 @@
-const moment = require("moment")
+import moment from "moment"
 
-function getCurrentDay(){
+export function getCurrentDay(){
     console.log(moment().format('dddd'))
 }
-function getCurrentMonth(){
+export function getCurrentMonth(){
     console.log(moment().format('MMMM'))
 }
-function getCurrentYear(){
+export function getCurrentYear(){
     console.log(moment().get("year"))
 }
 
-function getDate(){
-    console.log(moment([2012, 0, 31]).month(1).format("YYYY-MM-DD").replace(/-/g, "/"), moment().format('LTS').replace(" PM", ""))
+export function getDate(){
+    console.log(moment().month(1).format("YYYY-MM-DD").replace(/-/g, "/"), moment().format("HH:mm:ss"))
 }
-
-getCurrentDay()
-getCurrentMonth()
-getCurrentYear()
-getDate()
