@@ -11,6 +11,6 @@ export function getCurrentYear(){
 }
 
 export function getDate(){
-    console.log(moment().month(1).format("YYYY-MM-DD").replace(/-/g, "/"), moment().format("HH:mm:ss"))
+    return `${moment().month(1).format("YYYY-MM-DD").replace(/-/g, "/")} ${moment().format("HH:mm:ss")}`
 }
 
