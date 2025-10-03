@@ -1,8 +1,10 @@
 const express = require('express')
 const path = require('path')
 const fs = require('fs')
+const fsPromises = require('fs/promises')
 
 const app = express()
+app.use(express.json())
 
 function getDate(){
     return `${moment().month(1).format("YYYY-MM-DD").replace(/-/g, "/")} ${moment().format("HH:mm:ss")}`
@@ -10,6 +12,8 @@ function getDate(){
 
 const allPostsPath = path.join(__dirname, "posts.json")
 const allPosts = JSON.parse(fs.readFileSync(allPostsPath, "utf-8"))
+
+const createdPosts = []
 
 app.get("/timestamp", (req, res) =>{
     res.json(getDate())
@@ -41,6 +45,36 @@ app.get("/posts", (req, res) =>{
     res.json(allPosts)
 })
 
+app.post("/posts", async (req, res) =>{
+    const body = req.body
+    console.log("body =", body)
+
+    if (!body){
+        res.status(422).json("body does not exist")
+        return
+    } 
+    const newPost = {... body, id: createdPosts.length + 1}
+    if (!newPost.title){
+        res.status(422).json("title is required")
+        return
+    }
+    if (!newPost.description){
+        res.status(422).json("description is required")
+        return
+    }
+    if (!newPost.image){
+        res.status(422).json("image is required")
+        return
+    }
+    try{
+        createdPosts.push(newPost)
+        await fsPromises.writeFile("./createdPosts.js", JSON.stringify(createdPosts, null, 4))
+        res.status(201).json("new post is created")
+    } catch (error){
+        res.status(500).json("post creation failed")
+    }
+})
+
 app.get("/posts/:id", (req, res) =>{
     const posts = [...allPosts]
     posts.forEach((post) =>{
@@ -52,6 +86,7 @@ app.get("/posts/:id", (req, res) =>{
     res.status(404).json("Post is not found")
 })
 
+
 app.listen(8000, 'localhost', ()=>{
-    console.log("server started")
+    console.log("server started on ")
 })
