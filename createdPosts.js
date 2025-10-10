@@ -1,8 +1,8 @@
 [
     {
-        "title": "post1",
-        "description": "some text",
-        "image": "image.jpg",
+        "title": "post2",
+        "description": "different text",
+        "image": "image.png",
         "id": 1
     },
     {
