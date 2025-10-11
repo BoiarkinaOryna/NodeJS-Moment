@@ -1,9 +1,10 @@
-const PostService = require('./post.service.cjs')
-const createdPosts = []
+import { Request, Response } from "express"
+import { PostService } from "./post.service"
+const createdPosts: object[] = []
 
 
-const PostController = {
-    getAll: (req, res) =>{
+export const PostController = {
+    getAll: (req: Request, res: Response) =>{
         const take = req.query.take
         const skip = req.query.skip
     
@@ -18,7 +19,7 @@ const PostController = {
         }
         res.json(PostService.getAll())
     },
-    create: async (req, res) =>{
+    create: async (req: Request, res: Response) =>{
         const body = req.body
         console.log("body =", body)
     
@@ -46,7 +47,7 @@ const PostController = {
             res.status(500).json("post creation failed")
         }
     }, 
-    getById: (req, res) =>{
+    getById: (req: Request, res: Response) =>{
         const post = PostService.getById(req.params.id)
         console.log("post =", post)
         if (post){
@@ -56,5 +57,3 @@ const PostController = {
         res.status(404).json("Post is not found")
     }
 }
-
-module.exports = PostController

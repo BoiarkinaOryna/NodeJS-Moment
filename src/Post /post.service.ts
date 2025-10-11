@@ -1,23 +1,30 @@
-const path = require('path')
-const fs = require('fs')
-const fsPromises = require('fs/promises')
+import path from 'path'
+import fs from 'fs'
+import fsPromises from 'fs/promises'
+
 const allPostsPath = path.join(__dirname, "posts.json")
 console.log(allPostsPath)
-const allPosts = JSON.parse(fs.readFileSync(allPostsPath, "utf-8"))
+const allPosts:{
+    id: number,
+    title: string,
+    description: string,
+    image: string,
+    likes: number
+}[] =  JSON.parse(fs.readFileSync(allPostsPath, "utf-8"))
 
-const PostService = {
-    getAll: (take, skip)=>{
+export const PostService = {
+    getAll: (take: string, skip: string)=>{
         if(take && skip){
-            return neededPosts.slice(skip, +skip + +take)
+            return allPosts.slice(+skip, +skip + +take)
         }else if(take){
-            return neededPosts.slice(0, take)
+            return allPosts.slice(0, +take)
         }else if(skip){
-            return neededPosts.slice(skip)
+            return allPosts.slice(+skip)
         }else{
             return allPosts
         }
     },
-    create: async (createdPosts, newPost)=>{
+    create: async (createdPosts: object[], newPost: object)=>{
         try{
             createdPosts.push(newPost)
             await fsPromises.writeFile("./createdPosts.json", JSON.stringify(createdPosts, null, 4))
@@ -26,11 +33,9 @@ const PostService = {
             return
         }
     },
-    getById: (id)=>{
+    getById: (id: number)=>{
         console.log("id =", id)
         const posts = [...allPosts]
         return posts.find(post => post.id == id)
     }
 }
-
-module.exports = PostService

@@ -1,7 +1,7 @@
-const express = require('express')
-const PostController = require('./post.controller.cjs')
+import { Router } from "express"
+import { PostController } from "./post.controller"
 
-const PostRouter = express.Router()
+const PostRouter = Router()
 
 PostRouter.get("/posts", PostController.getAll)
 
@@ -9,4 +9,4 @@ PostRouter.post("/posts", PostController.create)
 
 PostRouter.get("/posts/:id", PostController.getById)
 
-module.exports = PostRouter
+export { PostRouter }
