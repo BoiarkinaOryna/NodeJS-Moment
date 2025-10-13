@@ -8,16 +8,18 @@ export const PostController = {
         const take = req.query.take
         const skip = req.query.skip
     
-        console.log("take =", take, "skip =", skip)
-        
-        if (isNaN(take) && take != undefined){
-            res.status(400).json("take must be a number")
-            return
-        } else if(isNaN(skip) && skip != undefined){
-            res.status(400).json("skip must be a number")
-            return
+        if (take){
+            if (isNaN(+take)){
+                res.status(400).json("take must be a number")
+                return
+            }
+        } else if(skip){
+            if(isNaN(+skip)){
+                res.status(400).json("skip must be a number")
+                return
+            }
         }
-        res.json(PostService.getAll())
+        res.json(PostService.getAll(take, skip))
     },
     create: async (req: Request, res: Response) =>{
         const body = req.body
@@ -48,12 +50,17 @@ export const PostController = {
         }
     }, 
     getById: (req: Request, res: Response) =>{
-        const post = PostService.getById(req.params.id)
-        console.log("post =", post)
-        if (post){
-            res.json(post)
-            return
+        const id = req.params.id
+        if (id){
+            const post = PostService.getById(+id)
+            console.log("post =", post)
+            if (post){
+                res.json(post)
+                return
+            }
+            res.status(404).json("Post is not found")
+        }else{
+            res.status(422).json("id is required")
         }
-        res.status(404).json("Post is not found")
     }
 }

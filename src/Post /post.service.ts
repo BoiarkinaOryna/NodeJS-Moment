@@ -13,12 +13,13 @@ const allPosts:{
 }[] =  JSON.parse(fs.readFileSync(allPostsPath, "utf-8"))
 
 export const PostService = {
-    getAll: (take: string, skip: string)=>{
+    getAll: (take: any, skip: any)=>{
+        console.log(typeof(take), typeof(skip))
         if(take && skip){
             return allPosts.slice(+skip, +skip + +take)
         }else if(take){
             return allPosts.slice(0, +take)
-        }else if(skip){
+        }else if(+skip){
             return allPosts.slice(+skip)
         }else{
             return allPosts

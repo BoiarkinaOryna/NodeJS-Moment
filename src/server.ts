@@ -1,5 +1,5 @@
 import express from 'express'
-import { PostRouter } from './Post/post.routes'
+import { PostRouter } from './Post /post.routes'
 
 const app = express()
 app.use(express.json())
