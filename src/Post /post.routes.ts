@@ -9,4 +9,7 @@ PostRouter.post("/posts", PostController.create)
 
 PostRouter.get("/posts/:id", PostController.getById)
 
+PostRouter.patch("/posts/:id", PostController.update)
+
+
 export { PostRouter }

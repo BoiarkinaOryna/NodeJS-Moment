@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import { PostService } from "./post.service"
-const createdPosts: object[] = []
+import { Post, CreatePostData, UpdatePostData } from "./post.types"
+const createdPosts: Post[] = []
 
 
 export const PostController = {
@@ -22,14 +23,14 @@ export const PostController = {
         res.json(PostService.getAll(take, skip))
     },
     create: async (req: Request, res: Response) =>{
-        const body = req.body
+        const body: CreatePostData | undefined = req.body
         console.log("body =", body)
     
         if (!body){
             res.status(422).json("body does not exist")
             return
         } 
-        const newPost = {... body, id: createdPosts.length + 1}
+        const newPost: Post = {... body, id: createdPosts.length + 1}
         if (!newPost.title){
             res.status(422).json("title is required")
             return
@@ -62,5 +63,28 @@ export const PostController = {
         }else{
             res.status(422).json("id is required")
         }
+    },
+    update: async (req: Request, res: Response) =>{
+        const body: UpdatePostData | undefined = req.body
+        const id = req.params.id
+
+        if (!body){
+            res.status(422).json("body is required")
+            return
+        } 
+        if(!id){
+            res.status(422).json("id is required")
+            return
+        }
+        const result: Post | null | string = await PostService.update(+id, body)
+        if (!result){
+            res.status(404).json("post is not found")
+            return
+        }
+        if (typeof(result) == 'string'){
+            res.status(500).json(result)
+            return
+        }
+        res.json("post is updated")
     }
 }
