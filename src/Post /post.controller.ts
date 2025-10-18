@@ -1,11 +1,10 @@
-import { Request, Response } from "express"
 import { PostService } from "./post.service"
-import { Post, CreatePostData, UpdatePostData } from "./post.types"
+import { Post, UpdatePostData, ControllerContract } from "./post.types"
 const createdPosts: Post[] = []
 
 
-export const PostController = {
-    getAll: (req: Request, res: Response) =>{
+export const PostController: ControllerContract = {
+    getAll: (req, res) =>{
         const take = req.query.take
         const skip = req.query.skip
     
@@ -20,17 +19,32 @@ export const PostController = {
                 return
             }
         }
-        res.json(PostService.getAll(take, skip))
+        if (take && skip){
+            res.json(PostService.getAll(+take, +skip))
+            return
+        }
+        if (take){
+            res.json(PostService.getAll(+take))
+            return
+        }
+        if (skip){
+            res.json(PostService.getAll(+skip))
+            return
+        } else{
+            if (take && skip){
+                res.json(PostService.getAll())
+            }
+        }
     },
-    create: async (req: Request, res: Response) =>{
-        const body: CreatePostData | undefined = req.body
+    create: async (req, res) =>{
+        const body = req.body
         console.log("body =", body)
     
         if (!body){
             res.status(422).json("body does not exist")
             return
         } 
-        const newPost: Post = {... body, id: createdPosts.length + 1}
+        const newPost = {... body, id: createdPosts.length + 1}
         if (!newPost.title){
             res.status(422).json("title is required")
             return
@@ -50,7 +64,7 @@ export const PostController = {
             res.status(500).json("post creation failed")
         }
     }, 
-    getById: (req: Request, res: Response) =>{
+    getById: (req, res) =>{
         const id = req.params.id
         if (id){
             const post = PostService.getById(+id)
@@ -64,8 +78,8 @@ export const PostController = {
             res.status(422).json("id is required")
         }
     },
-    update: async (req: Request, res: Response) =>{
-        const body: UpdatePostData | undefined = req.body
+    update: async (req, res) =>{
+        const body = req.body
         const id = req.params.id
 
         if (!body){
@@ -76,7 +90,7 @@ export const PostController = {
             res.status(422).json("id is required")
             return
         }
-        const result: Post | null | string = await PostService.update(+id, body)
+        const result = await PostService.update(+id, body)
         if (!result){
             res.status(404).json("post is not found")
             return

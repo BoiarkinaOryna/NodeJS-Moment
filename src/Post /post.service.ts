@@ -1,25 +1,25 @@
 import path from 'path'
 import fs from 'fs'
 import fsPromises from 'fs/promises'
-import { Post, UpdatePostData } from './post.types'
+import { Post, UpdatePostData, ServiceContract } from './post.types'
 
 const allPostsPath = path.join(__dirname, "posts.json")
 const allPosts: Post[] =  JSON.parse(fs.readFileSync(allPostsPath, "utf-8"))
 
-export const PostService = {
-    getAll: (take: any, skip: any)=>{
+export const PostService: ServiceContract = {
+    getAll: (take, skip)=>{
         console.log(typeof(take), typeof(skip))
         if(take && skip){
-            return allPosts.slice(+skip, +skip + +take)
+            return allPosts.slice(skip, skip + take)
         }else if(take){
-            return allPosts.slice(0, +take)
-        }else if(+skip){
-            return allPosts.slice(+skip)
+            return allPosts.slice(0, take)
+        }else if(skip){
+            return allPosts.slice(skip)
         }else{
             return allPosts
         }
     },
-    create: async (createdPosts: Post[], newPost: Post)=>{
+    create: async (createdPosts, newPost)=>{
         try{
             createdPosts.push(newPost)
             await fsPromises.writeFile("./createdPosts.json", JSON.stringify(createdPosts, null, 4))
@@ -33,7 +33,7 @@ export const PostService = {
         const posts = [...allPosts]
         return posts.find(post => post.id == id)
     },
-    async update(id: number, dataToUpdate: UpdatePostData){
+    async update(id, dataToUpdate){
         const post = this.getById(id)
         if (!post){
             return null
