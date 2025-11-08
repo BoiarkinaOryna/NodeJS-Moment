@@ -11,5 +11,7 @@ PostRouter.get("/posts/:id", PostController.getById)
 
 PostRouter.patch("/posts/:id", PostController.update)
 
+PostRouter.delete("/posts/:id", PostController.delete)
+
 
 export { PostRouter }

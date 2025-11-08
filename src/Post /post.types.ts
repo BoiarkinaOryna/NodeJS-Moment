@@ -8,6 +8,8 @@ export type Post = {
     likes: number
 }
 
+export type PostWithTags = Post & {tags: string[]}
+
 export type CreatePostData = Omit<Post, "id">
 export type UpdatePostData = Partial<Omit<Post, "id">>
 
@@ -28,12 +30,14 @@ export interface ControllerContract {
     getAll: (req: Request<object, Post[] | string, object, {take?: string, skip?: string}>, res: Response<Post[] | string>) => void,
     create: (req: Request<object, Post | string, CreatePostData, object>, res: Response<Post | string>) => Promise<void>,
     getById: (req: Request<{id: string}, Post | string, object, object>, res: Response<Post | string>) => void,
-    update: (req: Request<{id: string}, Post | string, UpdatePostData, object>, res: Response<Post | string>) => void
+    update: (req: Request<{id: string}, Post | string, UpdatePostData, object>, res: Response<Post | string>) => void,
+    delete: (req: Request<{id: string}, Post | string, Post, object>, res: Response<Post | string>) => void
 }
 
 export interface ServiceContract {
     getAll: (take?: number, skip?: number) => Post[],
     create: (createdPosts: Post[], newPost: Post) => Promise<true | undefined>,
     getById: (id: number) => Post | undefined,
-    update: (id: number, dataToUpdate: UpdatePostData) => Promise<string | Post | null>
+    update: (id: number, dataToUpdate: UpdatePostData) => Promise<string | Post | null>,
+    delete: (id: number) => Promise<Post | string>
 }

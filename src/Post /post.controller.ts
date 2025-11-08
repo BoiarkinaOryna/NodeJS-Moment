@@ -100,5 +100,14 @@ export const PostController: ControllerContract = {
             return
         }
         res.json("post is updated")
+    },
+    delete: async (req, res) =>{
+        const id = req.params.id
+        const result = await PostService.delete(+id)
+        if (typeof(result) == 'string'){
+            res.status(404).json("post is not found")
+            return
+        }
+        res.json(result)
     }
 }

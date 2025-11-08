@@ -1,7 +1,11 @@
 import path from 'path'
 import fs from 'fs'
 import fsPromises from 'fs/promises'
-import { Post, UpdatePostData, ServiceContract } from './post.types'
+import { Post, ServiceContract } from './post.types'
+import { PrismaClient as PC } from "../generated/prisma/client"
+
+
+const PrismaClient = new PC() 
 
 const allPostsPath = path.join(__dirname, "posts.json")
 const allPosts: Post[] =  JSON.parse(fs.readFileSync(allPostsPath, "utf-8"))
@@ -47,5 +51,15 @@ export const PostService: ServiceContract = {
             console.log(error)
             return String(error)
         }
+    },
+    delete: async(id)=>{
+        try{
+            const deletedPost = await PrismaClient.post.delete({
+                where: {id}
+            })
+            return deletedPost
+        } catch (error){
+            return String(error)
+        }    
     }
 }
